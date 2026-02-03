@@ -1,0 +1,339 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0a;
+  --color-glass: rgba(255, 255, 255, 0.03);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-text-primary: #d1d5db;
+  --color-text-muted: #9ca3af;
+
+  --font-sans: Poppins, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --animate-spin-slow: spin 8s linear infinite;
+  --animate-fade-up: fadeUp 0.8s ease-out forwards;
+  --animate-fade-in: fadeIn 1s ease-out forwards;
+  --animate-pulse-glow: pulse-glow 3s infinite ease-in-out;
+  --animate-brand-glow: pulse-brand-glow 2s infinite ease-in-out;
+
+  --breakpoint-nav-mobile: 1190px;
+
+  @keyframes fadeUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse-glow {
+
+    0%,
+    100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0));
+    }
+
+    50% {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
+    }
+  }
+
+  @keyframes pulse-brand-glow {
+
+    0%,
+    100% {
+      filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+    }
+
+    50% {
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+    }
+  }
+
+  @keyframes scan-line {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+/* === Section: Base === */
+body {
+  @apply bg-background text-text-primary font-sans antialiased selection:bg-white selection:text-background overflow-x-hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  @apply text-white font-semibold tracking-normal;
+}
+
+/* === Section: Components === */
+.glass-card {
+  @apply bg-glass backdrop-blur-md border border-border rounded-2xl p-6 transition-all duration-300;
+}
+
+.glass-card-flat {
+  @apply bg-glass backdrop-blur-md border border-border rounded-2xl transition-all duration-300;
+}
+
+.glass-card:hover,
+.glass-card-flat:hover {
+  @apply border-white/20 bg-white/[0.05] shadow-2xl shadow-white/5;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500;
+}
+
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  @apply fixed inset-0 opacity-[0.03] pointer-events-none z-50;
+}
+
+/* === Section: Utilities === */
+.line-clamp-5 {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* === Section: Hyphenation Rules === */
+@media (max-width: 767px) {
+
+  /* Mobile: default (strict) */
+  .hyphen-limit {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphenate-limit-lines: 2;
+    -webkit-hyphenate-limit-lines: 2;
+    -ms-hyphenate-limit-lines: 2;
+    hyphenate-limit-chars: 7 4 3;
+    -webkit-hyphenate-limit-chars: 7 4 3;
+  }
+
+  /* Mobile: cards (relaxed) */
+  .glass-card .hyphen-limit {
+    hyphenate-limit-chars: 6 3 2;
+    -webkit-hyphenate-limit-chars: 6 3 2;
+  }
+
+  /* Mobile: modal content (super strict) */
+  .glass-card .modal-content-scroll.hyphen-limit {
+    hyphenate-limit-chars: 9 4 4;
+    -webkit-hyphenate-limit-chars: 9 4 4;
+  }
+}
+
+
+/* Desktop: disable auto hyphenation */
+@media (min-width: 768px) {
+  .hyphen-limit {
+    hyphens: manual;
+    -webkit-hyphens: manual;
+    -ms-hyphens: manual;
+  }
+}
+
+/* Always-on hyphenation utility */
+.hyphen-limit-always {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphenate-limit-lines: 2;
+  -webkit-hyphenate-limit-lines: 2;
+  hyphenate-limit-chars: 7 4 3;
+  -webkit-hyphenate-limit-chars: 7 4 3;
+}
+
+/* ROI cards: super relaxed */
+.hyphen-limit-super-relaxed {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphenate-limit-lines: 2;
+  -webkit-hyphenate-limit-lines: 2;
+  hyphenate-limit-chars: 5 2 2;
+  -webkit-hyphenate-limit-chars: 5 2 2;
+}
+
+/* ROI cards: strict */
+.hyphen-limit-strict-roi {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphenate-limit-lines: 2;
+  -webkit-hyphenate-limit-lines: 2;
+  hyphenate-limit-chars: 9 2 2;
+  -webkit-hyphenate-limit-chars: 9 2 2;
+}
+
+/* === Section: Scrollbar Styling === */
+.modal-content-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modal-content-scroll::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.modal-content-scroll::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full;
+}
+
+/* === Section: Animation Utilities === */
+.animate-pulse-glow {
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+.animate-scan-line {
+  animation: scan-line 3s linear infinite;
+}
+
+/* === Section: Anchor Scroll Offsets === */
+#about,
+#architecture,
+#intelligence,
+#engineering,
+#modules-grid,
+#roi {
+  scroll-margin-top: 3rem;
+}
+
+/* === Section: Print Styles === */
+@media print {
+  @page {
+    margin: 1cm;
+    size: auto;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+    font-family: var(--font-sans) !important;
+    overflow: visible !important;
+  }
+
+  /* Print: hide everything by default */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Print: reset wrappers */
+  .print-reset-wrapper,
+  #dashboard-root,
+  .container,
+  .max-w-7xl,
+  .max-w-5xl,
+  .max-w-4xl {
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+
+  /* Print: hide UI chrome */
+  .no-print,
+  .pagination-wrapper,
+  nav,
+  header,
+  .filter-bar,
+  .tab-buttons {
+    display: none !important;
+  }
+
+  /* Print: show printable area */
+  #printableTableArea,
+  #printableTableArea * {
+    visibility: visible;
+    display: block !important;
+    color: black !important;
+  }
+
+  /* Print: enforce hidden chrome inside printable area */
+  #printableTableArea .no-print,
+  #printableTableArea .pagination-wrapper {
+    display: none !important;
+  }
+
+  /* Print: table semantics */
+  #printableTableArea table {
+    display: table !important;
+  }
+
+  #printableTableArea thead {
+    display: table-header-group !important;
+  }
+
+  #printableTableArea tbody {
+    display: table-row-group !important;
+  }
+
+  #printableTableArea tr {
+    display: table-row !important;
+  }
+
+  #printableTableArea td,
+  #printableTableArea th {
+    display: table-cell !important;
+    color: black !important;
+    border-color: #ccc !important;
+  }
+
+  #printableTableArea .print-hidden-col {
+    display: none !important;
+  }
+
+  #printableTableArea {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: white !important;
+    z-index: 9999;
+  }
+
+  .glass-card {
+    border: none !important;
+    background: white !important;
+    box-shadow: none !important;
+  }
+}

@@ -1,0 +1,44 @@
+name: Deploy to Production
+
+# Deploy runs only after the CI workflow completes successfully on main.
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  web-deploy:
+    name: Deploy to HostGator
+    runs-on: ubuntu-latest
+    # Safety gate: skip deploy when CI fails or is cancelled.
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for Production
+        run: npm run build
+
+      # Uses FTP credentials stored in GitHub Secrets to publish the built /dist output.
+      - name: Sync files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ./
+
+          # Intentional: removes stale files from previous deploys
+          dangerous-clean-slate: false

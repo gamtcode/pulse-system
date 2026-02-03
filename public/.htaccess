@@ -1,0 +1,29 @@
+# .htaccess - PULSE System (Architecode) - HostGator optimized
+
+# Default entry point for the SPA.
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Force HTTPS to avoid mixed-content issues and keep a single canonical scheme.
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Canonicalize URLs by removing a visible "index.html" (must run before internal rewrites).
+    RewriteCond %{THE_REQUEST} ^.*/index\.html
+    RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
+
+    # Stop early when the request already resolved to index.html to reduce rewrite work.
+    RewriteRule ^index\.html$ - [L]
+
+    # SPA fallback: route non-files/non-directories to the React entry point.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.html [L]
+
+    # Add trailing slash only for real directories to keep server-side paths canonical.
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^(.*[^/])$ /$1/ [L,R=301]
+</IfModule>
